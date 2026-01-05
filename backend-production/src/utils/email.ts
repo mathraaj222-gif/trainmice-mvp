@@ -25,12 +25,16 @@ export async function sendVerificationEmail({
     return; // Don't throw error, just skip email sending
   }
 
-  const verificationUrl = `${config.app.baseUrl}/api/auth/verify-email?token=${token}`;
-  
-  // For frontend redirect, use the appropriate frontend URL
   const frontendUrl = role === 'CLIENT' 
     ? config.cors.clientUrl 
     : config.cors.trainerUrl;
+
+  const verificationUrl =
+  `${config.app.baseUrl}/api/auth/verify-email` +
+  `?token=${token}&redirect=${encodeURIComponent(frontendUrl)}`;
+  
+  // For frontend redirect, use the appropriate frontend URL
+
 
   const htmlContent = `
     <!DOCTYPE html>
