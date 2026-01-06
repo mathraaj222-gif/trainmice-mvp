@@ -379,52 +379,67 @@ router.post(
   }
 );
 
-// Verify Email
+// Verify Email Handler (shared logic)
+const handleEmailVerification = async (token: string, res: Response) => {
+  if (!token || typeof token !== 'string') {
+    return res.status(400).json({ error: 'Verification token is required' });
+  }
+
+  // Find user by verification token
+  const user = await prisma.user.findFirst({
+    where: {
+      verificationToken: token,
+    },
+  });
+
+  if (!user) {
+    return res.status(400).json({ error: 'Invalid verification token' });
+  }
+
+  // Check if token is expired
+  if (!user.tokenExpiry || isTokenExpired(user.tokenExpiry)) {
+    return res.status(400).json({ error: 'Verification token has expired' });
+  }
+
+  // Check if already verified
+  if (user.emailVerified) {
+    return res.status(400).json({ error: 'Email already verified' });
+  }
+
+  // Verify email and clear token
+  await prisma.user.update({
+    where: { id: user.id },
+    data: {
+      emailVerified: true,
+      verificationToken: null,
+      tokenExpiry: null,
+    },
+  });
+
+  // Redirect to frontend success page
+  const frontendUrl = user.role === 'CLIENT' 
+    ? process.env.FRONTEND_URL_CLIENT || 'http://localhost:5173'
+    : process.env.FRONTEND_URL_TRAINER || 'http://localhost:5174';
+
+  return res.redirect(`${frontendUrl}/verify-email-success`);
+};
+
+// Short verification route (for shorter URLs in emails)
+router.get('/v', async (req: Request, res: Response) => {
+  try {
+    const token = req.query.t as string;
+    return await handleEmailVerification(token, res);
+  } catch (error: any) {
+    console.error('Email verification error:', error);
+    return res.status(500).json({ error: 'Verification failed', details: error.message });
+  }
+});
+
+// Verify Email (legacy route for backward compatibility)
 router.get('/verify-email', async (req: Request, res: Response) => {
   try {
-    const { token } = req.query;
-
-    if (!token || typeof token !== 'string') {
-      return res.status(400).json({ error: 'Verification token is required' });
-    }
-
-    // Find user by verification token
-    const user = await prisma.user.findFirst({
-      where: {
-        verificationToken: token,
-      },
-    });
-
-    if (!user) {
-      return res.status(400).json({ error: 'Invalid verification token' });
-    }
-
-    // Check if token is expired
-    if (!user.tokenExpiry || isTokenExpired(user.tokenExpiry)) {
-      return res.status(400).json({ error: 'Verification token has expired' });
-    }
-
-    // Check if already verified
-    if (user.emailVerified) {
-      return res.status(400).json({ error: 'Email already verified' });
-    }
-
-    // Verify email and clear token
-    await prisma.user.update({
-      where: { id: user.id },
-      data: {
-        emailVerified: true,
-        verificationToken: null,
-        tokenExpiry: null,
-      },
-    });
-
-    // Redirect to frontend success page
-    const frontendUrl = user.role === 'CLIENT' 
-      ? process.env.FRONTEND_URL_CLIENT || 'http://localhost:5173'
-      : process.env.FRONTEND_URL_TRAINER || 'http://localhost:5174';
-
-    return res.redirect(`${frontendUrl}/verify-email-success`);
+    const token = req.query.token as string;
+    return await handleEmailVerification(token, res);
   } catch (error: any) {
     console.error('Email verification error:', error);
     return res.status(500).json({ error: 'Verification failed', details: error.message });

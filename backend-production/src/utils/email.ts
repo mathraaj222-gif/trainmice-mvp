@@ -15,7 +15,7 @@ interface SendVerificationEmailParams {
 export async function sendVerificationEmail({
   email,
   token,
-  role,
+  role: _role, // Role is kept for interface compatibility but not used (redirect determined by user role in DB)
 }: SendVerificationEmailParams): Promise<void> {
   // Check if Resend is configured
   if (!resend) {
@@ -25,15 +25,8 @@ export async function sendVerificationEmail({
     return; // Don't throw error, just skip email sending
   }
 
-  const frontendUrl = role === 'CLIENT' 
-    ? config.cors.clientUrl 
-    : config.cors.trainerUrl;
-
-  const verificationUrl =
-  `${config.app.baseUrl}/api/auth/verify-email` +
-  `?token=${token}&redirect=${encodeURIComponent(frontendUrl)}`;
-  
-  // For frontend redirect, use the appropriate frontend URL
+  // Shortened verification URL - redirect is determined by user role in the backend
+  const verificationUrl = `${config.app.baseUrl}/api/auth/v?t=${token}`;
 
 
   const htmlContent = `
