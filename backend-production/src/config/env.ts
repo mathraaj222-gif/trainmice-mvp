@@ -6,6 +6,7 @@ dotenv.config();
 const requiredEnvVars = [
   'DATABASE_URL',
   'JWT_SECRET',
+  'APP_BASE_URL',
 ];
 
 if (process.env.NODE_ENV === 'production') {
@@ -112,7 +113,15 @@ export const config = {
     from: process.env.SMTP_FROM || process.env.SMTP_USER || 'noreply@trainmice.com',
   },
   app: {
-    baseUrl: process.env.APP_BASE_URL || 'http://localhost:3000',
+    baseUrl: (() => {
+      const url = process.env.APP_BASE_URL || 'http://localhost:3000';
+      // Validate URL format
+      if (process.env.NODE_ENV === 'production' && !validateOrigin(url)) {
+        console.error(`❌ Invalid APP_BASE_URL: ${url}`);
+        process.exit(1);
+      }
+      return normalizeUrl(url);
+    })(),
   },
   uploads: {
     maxFileSize: parseInt(process.env.MAX_FILE_SIZE || '10485760', 10), // 10MB default
