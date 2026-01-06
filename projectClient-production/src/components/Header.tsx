@@ -57,9 +57,9 @@ export function Header({ onLoginClick, onSignupClick }: HeaderProps) {
   return (
     <header className="bg-white border-b border-gray-200 sticky top-0 z-40 shadow-sm">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16">
-          {/* Logo and Navigation - Centered */}
-          <div className="flex items-center justify-center flex-1 gap-6">
+        <div className="flex items-center h-16 relative">
+          {/* Logo - Left */}
+          <div className="flex items-center flex-shrink-0">
             <a href="/" className="flex items-center">
               <img 
                 src={trainMICELogo} 
@@ -67,44 +67,44 @@ export function Header({ onLoginClick, onSignupClick }: HeaderProps) {
                 className="h-10 w-auto"
               />
             </a>
-
-            {/* Navigation Links - Centered */}
-            <nav className="hidden md:flex items-center gap-1">
-              <button
-                onClick={() => navigate('/')}
-                className={`px-4 py-2 text-sm font-medium rounded-lg transition-colors ${
-                  isActive('/')
-                    ? 'bg-gray-100 text-gray-900'
-                    : 'text-gray-700 hover:bg-gray-50'
-                }`}
-              >
-                Courses
-              </button>
-              <button
-                onClick={() => navigate('/request-custom-course')}
-                className={`px-4 py-2 text-sm font-medium rounded-lg transition-colors ${
-                  isActive('/request-custom-course')
-                    ? 'bg-gray-100 text-gray-900'
-                    : 'text-gray-700 hover:bg-gray-50'
-                }`}
-              >
-                Request Custom Courses
-              </button>
-              <button
-                onClick={() => navigate('/contact-us')}
-                className={`px-4 py-2 text-sm font-medium rounded-lg transition-colors ${
-                  isActive('/contact-us')
-                    ? 'bg-gray-100 text-gray-900'
-                    : 'text-gray-700 hover:bg-gray-50'
-                }`}
-              >
-                Contact Us
-              </button>
-            </nav>
           </div>
 
-          {/* User Actions */}
-          <div className="flex items-center gap-3">
+          {/* Navigation Links - Centered */}
+          <nav className="hidden md:flex items-center gap-1 flex-1 justify-center">
+            <button
+              onClick={() => navigate('/')}
+              className={`px-4 py-2 text-sm font-medium rounded-lg transition-colors ${
+                isActive('/')
+                  ? 'bg-gray-100 text-gray-900'
+                  : 'text-gray-700 hover:bg-gray-50'
+              }`}
+            >
+              Courses
+            </button>
+            <button
+              onClick={() => navigate('/request-custom-course')}
+              className={`px-4 py-2 text-sm font-medium rounded-lg transition-colors ${
+                isActive('/request-custom-course')
+                  ? 'bg-gray-100 text-gray-900'
+                  : 'text-gray-700 hover:bg-gray-50'
+              }`}
+            >
+              Request Custom Courses
+            </button>
+            <button
+              onClick={() => navigate('/contact-us')}
+              className={`px-4 py-2 text-sm font-medium rounded-lg transition-colors ${
+                isActive('/contact-us')
+                  ? 'bg-gray-100 text-gray-900'
+                  : 'text-gray-700 hover:bg-gray-50'
+              }`}
+            >
+              Contact Us
+            </button>
+          </nav>
+
+          {/* User Actions - Right */}
+          <div className="flex items-center gap-3 flex-shrink-0 ml-auto">
             {user ? (
               <>
                 {/* User Profile - Icon with Name */}
