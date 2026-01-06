@@ -56,14 +56,24 @@ export async function sendVerificationEmail({
           
           <p>Please click the button below to verify your email address and activate your account:</p>
           
-          <div style="text-align: center; margin: 30px 0;">
-            <a href="${verificationUrl}" 
-               style="display: inline-block; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); 
-                      color: white; padding: 15px 30px; text-decoration: none; 
-                      border-radius: 5px; font-weight: bold; font-size: 16px;">
-              Verify Now
-            </a>
-          </div>
+          <table width="100%" cellpadding="0" cellspacing="0" style="margin: 30px 0;">
+            <tr>
+              <td align="center">
+                <table cellpadding="0" cellspacing="0">
+                  <tr>
+                    <td align="center" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 5px;">
+                      <a href="${verificationUrl}" 
+                         style="display: block; padding: 15px 30px; text-decoration: none; 
+                                color: #ffffff; font-weight: bold; font-size: 16px; 
+                                border-radius: 5px; font-family: Arial, sans-serif;">
+                        Verify Now
+                      </a>
+                    </td>
+                  </tr>
+                </table>
+              </td>
+            </tr>
+          </table>
           
           <p style="font-size: 12px; color: #999; margin-top: 30px; border-top: 1px solid #ddd; padding-top: 20px;">
             This verification link will expire in 24 hours.<br>
@@ -79,9 +89,7 @@ Hello,
 
 Thank you for signing up with TrainMICE!
 
-Please click the "Verify Now" button in the HTML version of this email to verify your email address and activate your account.
-
-Please open this email in an HTML-capable email client and click the "Verify Now" button.
+Please open this email in an HTML-capable email client and click the "Verify Now" button to verify your email address and activate your account.
 
 This verification link will expire in 24 hours.
 
